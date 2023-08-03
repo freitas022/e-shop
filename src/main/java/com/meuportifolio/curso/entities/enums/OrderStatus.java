@@ -1,7 +1,5 @@
 package com.meuportifolio.curso.entities.enums;
 
-import com.meuportifolio.curso.entities.Order;
-
 public enum OrderStatus {
 	WAITING_PAYMENT(1),
 	PAID(2),

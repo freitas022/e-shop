@@ -21,12 +21,12 @@ import com.meuportifolio.curso.services.UserService;
 @RestController
 @RequestMapping(value = "/users")
 public class UserResource {
+	
 	@Autowired
 	private UserService service;
 	
 	@GetMapping
-	public ResponseEntity<List<User>> findAll() {
-		
+	public ResponseEntity<List<User>> findAll() {		
 		List<User> list = service.findAll();
 		return ResponseEntity.ok().body(list);
 	}

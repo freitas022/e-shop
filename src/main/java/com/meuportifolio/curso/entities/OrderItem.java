@@ -6,6 +6,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.meuportifolio.curso.entities.pk.OrderItemPK;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -16,6 +17,7 @@ public class OrderItem implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
+	@Column(name = "order_item_pk")
 	private OrderItemPK id = new OrderItemPK();
 
 	private Integer quantity;

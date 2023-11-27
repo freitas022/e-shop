@@ -3,7 +3,6 @@ package com.meuportifolio.curso.config;
 import java.time.Instant;
 import java.util.Arrays;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -24,21 +23,22 @@ import com.meuportifolio.curso.repositories.UserRepository;
 @Configuration
 @Profile("test")
 public class TestConfig implements CommandLineRunner {
+
+	private final UserRepository userRepository;
+	private final OrderRepository orderRepository;
+	private final CategoryRepository categoryRepository;
+	private final ProductRepository productRepository;
+	private final OrderItemRepository orderItemRepository;
 	
-	@Autowired
-	private UserRepository userRepository;
-	
-	@Autowired
-	private OrderRepository orderRepository;
-	
-	@Autowired
-	private CategoryRepository categoryRepository;
-	
-	@Autowired
-	private ProductRepository productRepository;
-	
-	@Autowired
-	private OrderItemRepository orderItemRepository;
+	public TestConfig(UserRepository userRepository, OrderRepository orderRepository,
+			CategoryRepository categoryRepository,
+			ProductRepository productRepository, OrderItemRepository orderItemRepository) {
+		this.userRepository = userRepository;
+		this.orderRepository = orderRepository;
+		this.categoryRepository = categoryRepository;
+		this.productRepository = productRepository;
+		this.orderItemRepository = orderItemRepository;
+	}
 	
 	@Override
 	public void run(String... args) throws Exception {

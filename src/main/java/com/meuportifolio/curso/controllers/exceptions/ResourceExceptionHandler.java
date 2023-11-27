@@ -1,4 +1,4 @@
-package com.meuportifolio.curso.resources.exceptions;
+package com.meuportifolio.curso.controllers.exceptions;
 
 import java.time.Instant;
 

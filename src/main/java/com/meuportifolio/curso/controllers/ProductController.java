@@ -1,8 +1,7 @@
-package com.meuportifolio.curso.resources;
+package com.meuportifolio.curso.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,17 +13,20 @@ import com.meuportifolio.curso.services.ProductService;
 
 @RestController
 @RequestMapping(value = "/products")
-public class ProductResource {
-	@Autowired
-	private ProductService service;
-	
+public class ProductController {
+
+	private final ProductService service;
+
+	public ProductController(ProductService productService) {
+		this.service = productService;
+	}
+
 	@GetMapping
 	public ResponseEntity<List<Product>> findAll() {
-		
 		List<Product> list = service.findAll();
 		return ResponseEntity.ok().body(list);
 	}
-	
+
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Product> findById(@PathVariable Long id) {
 		Product obj = service.findById(id);

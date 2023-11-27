@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 // import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +27,7 @@ import com.meuportifolio.curso.services.exceptions.ResourceNotFoundException;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-public class ProductServiceTest {
+class ProductServiceTest {
 
     @InjectMocks
     private ProductService productService;
@@ -40,7 +41,7 @@ public class ProductServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        product = new Product(19191919L, "Smart TV 55", "Lorem ipsum dollor sit amet", 3200.0, "");
+        product = new Product(19191919L, "Smart TV 55", "Lorem ipsum dollor sit amet", BigDecimal.valueOf(3200.0), "");
     }
 
     @Test

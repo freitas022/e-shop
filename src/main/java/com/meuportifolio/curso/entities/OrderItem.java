@@ -1,6 +1,7 @@
 package com.meuportifolio.curso.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -21,12 +22,12 @@ public class OrderItem implements Serializable {
 	private OrderItemPK id = new OrderItemPK();
 
 	private Integer quantity;
-	private Double price;
+	private BigDecimal price;
 
 	public OrderItem() {
 	}
 
-	public OrderItem(Order order, Product product, Integer quantity, Double price) {
+	public OrderItem(Order order, Product product, Integer quantity, BigDecimal price) {
 		super();
 		id.setOrder(order);
 		id.setProduct(product);
@@ -59,16 +60,16 @@ public class OrderItem implements Serializable {
 		this.quantity = quantity;
 	}
 
-	public Double getPrice() {
+	public BigDecimal getPrice() {
 		return price;
 	}
 
-	public void setPrice(Double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 
-	public Double getSubTotal() {
-		return price * quantity;
+	public BigDecimal getSubTotal() {
+		return this.price.multiply(new BigDecimal(quantity));
 	}
 
 	@Override

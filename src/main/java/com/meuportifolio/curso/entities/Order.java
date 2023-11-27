@@ -1,6 +1,7 @@
 package com.meuportifolio.curso.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
@@ -100,10 +101,10 @@ public class Order implements Serializable {
 		return items;
 	}
 
-	public Double getTotal() {
-		double sum = 0.0;
+	public BigDecimal getTotal() {
+		BigDecimal sum = BigDecimal.ZERO;
 		for (OrderItem x : items) {
-			sum += x.getSubTotal();
+			sum = sum.add(x.getSubTotal());
 		}
 		return sum;
 	}

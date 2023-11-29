@@ -2,6 +2,8 @@ package com.meuportifolio.curso.services;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,8 @@ import com.meuportifolio.curso.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class UserService {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
 	private final UserRepository repository;
 
@@ -20,19 +24,23 @@ public class UserService {
 	}
 
 	public List<User> findAll() {
+		LOGGER.info("Searching all users.");
 		return repository.findAll();
 	}
 
 	public User findById(Long id) {
+		LOGGER.info("Searching user by id.");
 		return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
 	public User insert(User obj) {
+		LOGGER.info("Creating new user.");
 		return repository.save(obj);
 	}
 
 	public void delete(Long id) {
 		try {
+			LOGGER.info("Deleting an existing user.");
 			repository.delete(repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id)));
 		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
@@ -40,6 +48,7 @@ public class UserService {
 	}
 
 	public User update(Long id, User obj) {
+		LOGGER.info("Updating an existing user.");
 		return repository.findById(id).map(user -> {
 			updateData(user, obj);
 			return repository.save(user);

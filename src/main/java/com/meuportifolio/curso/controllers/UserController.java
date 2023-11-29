@@ -17,8 +17,14 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.meuportifolio.curso.entities.User;
 import com.meuportifolio.curso.services.UserService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping(value = "/users")
+@Tag(name = "User", description = "Endpoints for managing users.")
 public class UserController {
 
 	private final UserService service;
@@ -27,18 +33,31 @@ public class UserController {
 		this.service = userService;
 	}
 
+	@Operation(summary = "Should return the list of users found")
+	@ApiResponse(responseCode = "200", description = "Should return the list of users found if present or else empty list.")
 	@GetMapping
 	public ResponseEntity<List<User>> findAll() {
 		List<User> list = service.findAll();
 		return ResponseEntity.ok().body(list);
 	}
 
+	@Operation(summary = "Should return only one user.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Success."),
+			@ApiResponse(responseCode = "204", description = "Should return user not found exception."),
+			@ApiResponse(responseCode = "400", description = "Bad Request.")
+	})
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<User> findById(@PathVariable Long id) {
 		User obj = service.findById(id);
 		return ResponseEntity.ok().body(obj);
 	}
 
+	@Operation(summary = "Should insert a user.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "User created with success."),
+			@ApiResponse(responseCode = "400", description = "Should return bad request.")
+	})
 	@PostMapping
 	public ResponseEntity<User> insert(@RequestBody User obj) {
 		obj = service.insert(obj);
@@ -46,12 +65,23 @@ public class UserController {
 		return ResponseEntity.created(uri).body(obj);
 	}
 
+	@Operation(summary = "Should delete one user.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "User deleted with success."),
+			@ApiResponse(responseCode = "204", description = "Should return user not found exception.")
+	})
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
 
+	@Operation(summary = "Should update an existing user.")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "User updated with success."),
+			@ApiResponse(responseCode = "204", description = "Should return user not found exception."),
+			@ApiResponse(responseCode = "400", description = "Bad Request.")
+	})
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User obj) {
 		obj = service.update(id, obj);

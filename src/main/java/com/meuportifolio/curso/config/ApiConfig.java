@@ -8,7 +8,7 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 
 @Configuration
-public class SwaggerConfig {
+public class ApiConfig {
     
     @Bean
     OpenAPI customOpenAPI() {
@@ -16,8 +16,10 @@ public class SwaggerConfig {
         .info(new Info()
             .title("e-Shop Commerce")
             .version("v1.0.0")
-            .description("API Rest desenvolvida durante o curso de Java + Orientação a Objetos")
+            .description("API Rest desenvolvida durante o curso de Java + Orientação a Objetos que eu estou aprimorando conforme avanço nos estudos de Java e Spring")
             .contact(new Contact()
-            .url("https://www.linkedin.com/in/matheus-freitas-0b27a8217/")));
+            .url("https://www.linkedin.com/in/matheus-freitas-0b27a8217/")
+            .email("mf022rj@gmail.com")
+            .name("Matheus Freitas")));
     }
 }

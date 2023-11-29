@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.meuportifolio.curso.dto.ProductDto;
 import com.meuportifolio.curso.entities.Product;
 import com.meuportifolio.curso.services.ProductService;
 
@@ -30,9 +31,9 @@ public class ProductController {
 	@Operation(summary = "Should return the list of products")
 	@ApiResponse(responseCode = "200", description = "Should return the list of products found if present or empty list.")
 	@GetMapping
-	public ResponseEntity<List<Product>> findAll() {
+	public ResponseEntity<List<ProductDto>> findAll() {
 		List<Product> list = service.findAll();
-		return ResponseEntity.ok().body(list);
+		return ResponseEntity.ok().body(list.stream().map(ProductDto::new).toList());
 	}
 
 	@Operation(summary = "Should return only one product.")
@@ -42,8 +43,8 @@ public class ProductController {
 			@ApiResponse(responseCode = "400", description = "Should return bad request.")
 	})
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Product> findById(@PathVariable Long id) {
+	public ResponseEntity<ProductDto> findById(@PathVariable Long id) {
 		Product obj = service.findById(id);
-		return ResponseEntity.ok().body(obj);
-	}
+		return ResponseEntity.ok().body(new ProductDto(obj));
+}
 }

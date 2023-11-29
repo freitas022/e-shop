@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.meuportifolio.curso.dto.UserDto;
 import com.meuportifolio.curso.entities.User;
 import com.meuportifolio.curso.services.UserService;
 
@@ -36,9 +37,9 @@ public class UserController {
 	@Operation(summary = "Should return the list of users found")
 	@ApiResponse(responseCode = "200", description = "Should return the list of users found if present or else empty list.")
 	@GetMapping
-	public ResponseEntity<List<User>> findAll() {
+	public ResponseEntity<List<UserDto>> findAll() {
 		List<User> list = service.findAll();
-		return ResponseEntity.ok().body(list);
+		return ResponseEntity.ok().body(list.stream().map(UserDto::new).toList());
 	}
 
 	@Operation(summary = "Should return only one user.")
@@ -48,9 +49,9 @@ public class UserController {
 			@ApiResponse(responseCode = "400", description = "Bad Request.")
 	})
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<User> findById(@PathVariable Long id) {
+	public ResponseEntity<UserDto> findById(@PathVariable Long id) {
 		User obj = service.findById(id);
-		return ResponseEntity.ok().body(obj);
+		return ResponseEntity.ok().body(new UserDto(obj));
 	}
 
 	@Operation(summary = "Should insert a user.")
@@ -59,10 +60,10 @@ public class UserController {
 			@ApiResponse(responseCode = "400", description = "Should return bad request.")
 	})
 	@PostMapping
-	public ResponseEntity<User> insert(@RequestBody User obj) {
+	public ResponseEntity<UserDto> insert(@RequestBody User obj) {
 		obj = service.insert(obj);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
-		return ResponseEntity.created(uri).body(obj);
+		return ResponseEntity.created(uri).body(new UserDto(obj));
 	}
 
 	@Operation(summary = "Should delete one user.")
@@ -83,8 +84,8 @@ public class UserController {
 			@ApiResponse(responseCode = "400", description = "Bad Request.")
 	})
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<User> update(@PathVariable Long id, @RequestBody User obj) {
+	public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody User obj) {
 		obj = service.update(id, obj);
-		return ResponseEntity.ok().body(obj);
+		return ResponseEntity.ok().body(new UserDto(obj));
 	}
 }

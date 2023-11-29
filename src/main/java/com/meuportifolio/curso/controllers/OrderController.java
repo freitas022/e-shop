@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.meuportifolio.curso.dto.OrderDto;
 import com.meuportifolio.curso.entities.Order;
 import com.meuportifolio.curso.services.OrderService;
 
@@ -30,9 +31,9 @@ public class OrderController {
 	@Operation(summary = "Should return the list of orders")
 	@ApiResponse(responseCode = "200", description = "Should return the list of orders found if present or empty list.")
 	@GetMapping
-	public ResponseEntity<List<Order>> findAll() {
+	public ResponseEntity<List<OrderDto>> findAll() {
 		List<Order> list = service.findAll();
-		return ResponseEntity.ok().body(list);
+		return ResponseEntity.ok().body(list.stream().map(OrderDto::new).toList());
 	}
 
 	@Operation(summary = "Should return only one order.")
@@ -42,8 +43,8 @@ public class OrderController {
 			@ApiResponse(responseCode = "400", description = "Should return bad request.")
 	})
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Order> findById(@PathVariable Long id) {
+	public ResponseEntity<OrderDto> findById(@PathVariable Long id) {
 		Order obj = service.findById(id);
-		return ResponseEntity.ok().body(obj);
+		return ResponseEntity.ok().body(new OrderDto(obj));
 	}
 }

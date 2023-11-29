@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.meuportifolio.curso.dto.CategoryDto;
 import com.meuportifolio.curso.entities.Category;
 import com.meuportifolio.curso.services.CategoryService;
 
@@ -30,10 +31,9 @@ public class CategoryController {
 	@Operation(summary = "Should return the list of categories")
 	@ApiResponse(responseCode = "200", description = "Should return the list of categories found if present or empty list.")
 	@GetMapping
-	public ResponseEntity<List<Category>> findAll() {
-		
+	public ResponseEntity<List<CategoryDto>> findAll() {		
 		List<Category> list = service.findAll();
-		return ResponseEntity.ok().body(list);
+		return ResponseEntity.ok().body(list.stream().map(CategoryDto::new).toList());
 	}
 	
 	@Operation(summary = "Should return only one category.")
@@ -43,8 +43,8 @@ public class CategoryController {
 			@ApiResponse(responseCode = "400", description = "Should return bad request.")
 	})
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<Category> findById(@PathVariable Long id) {
+	public ResponseEntity<CategoryDto> findById(@PathVariable Long id) {
 		Category obj = service.findById(id);
-		return ResponseEntity.ok().body(obj);
+		return ResponseEntity.ok().body(new CategoryDto(obj));
 	}
 }

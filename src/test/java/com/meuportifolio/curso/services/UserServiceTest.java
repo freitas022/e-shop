@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -30,7 +29,7 @@ import com.meuportifolio.curso.services.exceptions.ResourceNotFoundException;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-public class UserServiceTest {
+class UserServiceTest {
 
 	@InjectMocks
 	private UserService userService;
@@ -42,7 +41,6 @@ public class UserServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		MockitoAnnotations.openMocks(this);
 		expected = new User(1919191919L, "Bob Brown", "bob@gmail.com", "988888888", "123456");
 	}
 

@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-// import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.time.Instant;
 import java.util.Collections;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -29,7 +27,7 @@ import com.meuportifolio.curso.services.exceptions.ResourceNotFoundException;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
-public class OrderServiceTest {
+class OrderServiceTest {
 
     @InjectMocks
     private OrderService orderService;
@@ -44,7 +42,6 @@ public class OrderServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         client = new User(1919191919L, "Bob Brown", "bob@gmail.com", "988888888", "123456");
         order = new Order(19191919L, Instant.parse("2019-06-20T19:53:07Z"), OrderStatus.PAID, client);
     }

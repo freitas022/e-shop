@@ -1,7 +1,6 @@
 package com.meuportifolio.curso.entities;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,16 +8,7 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.meuportifolio.curso.entities.enums.OrderStatus;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tb_order")
@@ -32,7 +22,7 @@ public class Order implements Serializable {
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
 	private Instant moment;
-	private Integer orderStatus;
+	private OrderStatus orderStatus;
 
 	@ManyToOne
 	@JoinColumn(name = "client_id")
@@ -72,12 +62,12 @@ public class Order implements Serializable {
 	}
 
 	public OrderStatus getOrderStatus() {
-		return OrderStatus.valueOf(orderStatus);
+		return this.orderStatus;
 	}
 
 	public void setOrderStatus(OrderStatus orderStatus) {
 		if (orderStatus != null) {
-			this.orderStatus = orderStatus.getCode();
+			this.orderStatus = orderStatus;
 		}
 	}
 
@@ -99,14 +89,6 @@ public class Order implements Serializable {
 
 	public Set<OrderItem> getItems() {
 		return items;
-	}
-
-	public BigDecimal getTotal() {
-		BigDecimal sum = BigDecimal.ZERO;
-		for (OrderItem x : items) {
-			sum = sum.add(x.getSubTotal());
-		}
-		return sum;
 	}
 
 	@Override

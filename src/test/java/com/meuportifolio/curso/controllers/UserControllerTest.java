@@ -3,8 +3,6 @@ package com.meuportifolio.curso.controllers;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willDoNothing;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -53,18 +51,6 @@ class UserControllerTest {
 	@BeforeEach
 	void setUp() {
 		user = new User(USER_ID, "Matheus Freitas", "math3612@mail.com", "99999-8888", "*11118*");
-	}
-
-	@Test
-	void testDelete() throws Exception {
-		// Arrange
-		willDoNothing().given(userService).delete(user.getId());
-
-		// Act
-		ResultActions result = mockMvc.perform(delete(BASE_URL_ID, user.getId()));
-
-		// Assert
-		result.andExpect(status().isNoContent());
 	}
 
 	@Test

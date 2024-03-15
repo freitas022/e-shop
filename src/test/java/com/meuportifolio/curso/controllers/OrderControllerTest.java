@@ -10,6 +10,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.meuportifolio.curso.entities.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -28,7 +29,7 @@ import com.meuportifolio.curso.services.OrderService;
 class OrderControllerTest {
 
 	private static final String BASE_URL = "/orders";
-	private static final String BASE_URL_ID = "/orders/{id}";
+	private static final String BASE_URL_ID = "/orders/";
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -39,11 +40,11 @@ class OrderControllerTest {
 	@Test
 	void testFindAll() throws Exception {
 		// Arrange
-		final Order expected = new Order(111L, Instant.parse("2021-03-25T21:33:08Z"), OrderStatus.DELIVERED, null);
-		List<Order> list = new ArrayList<>();
-		list.add(expected);
+		List<Order> orders = List.of(
+				new Order(111L, Instant.parse("2021-03-25T21:33:08Z"), OrderStatus.WAITING_PAYMENT, mockUser())
+		);
 
-		given(service.findAll()).willReturn(list);
+		given(service.findAll()).willReturn(orders);
 
 		// Act
 		ResultActions response = this.mockMvc.perform(get(BASE_URL).contentType(MediaType.APPLICATION_JSON));
@@ -56,16 +57,30 @@ class OrderControllerTest {
 	void findById() throws Exception {
 		// Arrange
 		long orderId = System.currentTimeMillis();
-		final Order expected = new Order(orderId, Instant.parse("2021-03-25T19:23:56Z"), OrderStatus.DELIVERED, null);
+		final Order expected = new Order(orderId,
+											Instant.parse("2021-03-25T19:23:56Z"),
+											OrderStatus.WAITING_PAYMENT,
+											mockUser());
 
 		given(service.findById(orderId)).willReturn(expected);
 
 		// Act
 		ResultActions response = this.mockMvc
-				.perform(get(BASE_URL_ID, orderId).contentType(MediaType.APPLICATION_JSON));
+				.perform(get(BASE_URL_ID + orderId).contentType(MediaType.APPLICATION_JSON));
 
 		// Assert
-		response.andExpect(status().isOk()).andDo(print()).andExpect(jsonPath("$.id").value(orderId))
-				.andExpect(jsonPath("$.orderStatus").value("DELIVERED"));
+		response.andExpect(status().isOk())
+				.andDo(print())
+				.andExpect(jsonPath("$.id").value(expected.getId()))
+				.andExpect(jsonPath("$.orderStatus").value("WAITING_PAYMENT"));
 	}
+
+	private User mockUser() {
+		return new User(93312L,
+				"User",
+				"user@mail.com",
+				"2191234-5678",
+				"1234");
+	}
+
 }

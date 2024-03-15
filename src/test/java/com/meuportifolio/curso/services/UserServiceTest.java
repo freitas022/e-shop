@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -49,18 +48,6 @@ class UserServiceTest {
 		doNothing().when(userRepository).delete(expected);
 		userRepository.delete(expected);
 		verify(userRepository, times(1)).delete(any(User.class));
-	}
-
-	@Test
-	void testDeleteNotFound() {
-		long id = 2325120000L;
-		doThrow(new ResourceNotFoundException(id)).when(userRepository).delete(any());
-		when(userRepository.findById(anyLong())).thenReturn(Optional.of(expected));
-
-		assertThrows(ResourceNotFoundException.class, () -> userService.delete(id));
-
-		verify(userRepository).findById(anyLong());
-		verify(userRepository).delete(any());
 	}
 
 	@Test

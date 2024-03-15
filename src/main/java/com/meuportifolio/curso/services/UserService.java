@@ -38,15 +38,6 @@ public class UserService {
 		return repository.save(obj);
 	}
 
-	public void delete(Long id) {
-		try {
-			LOGGER.info("Deleting an existing user.");
-			repository.delete(repository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id)));
-		} catch (DataIntegrityViolationException e) {
-			throw new DatabaseException(e.getMessage());
-		}
-	}
-
 	public User update(Long id, User obj) {
 		LOGGER.info("Updating an existing user.");
 		return repository.findById(id).map(user -> {

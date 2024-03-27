@@ -1,33 +1,21 @@
 ### E-SHOP COMMERCE
 
-Nomeado por mim como "e-shop" é um projeto elaborado durante o [curso de Java](https://www.udemy.com/course/java-curso-completo/)  do professor [Nélio Alves](https://www.linkedin.com/in/nelio-alves/), nele foi possível explorar os mais altos níveis de conhecimento que foi adquirido durante o curso completo, consiste em uma API básica de e-commerce.
+Projeto simples de e-commerce desenvolvido com o intuito de exercitar lógica de programação, estrutura de dados, mapeamento objeto relacional, além de testes unitários e de integração com TestContainers.
 
-Atualmente estudo sobre como implementar autenticação e autorização com Spring Security 6.x e JWT nesse projeto.
+Atualmente estudo sobre como migrar para arquitetura de microsserviços, segurança com JWT e integrar filas e mensagerias com Amazon SQS.
 
 ### Tecnologias utilizadas
 
-- Java 17
-- Spring Boot 3
-- Maven
-- Spring Data JPA
-- JUnit 5 + Mockito
-- H2 + PostgreSQL
-- Docker
-- Swagger Docs
+![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
+![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
+![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
 
-### Como executar o projeto?
+*Para se beneficiar do script docker-compose é necessário ter conhecimentos prévios em docker.*
 
-**1. Clone o projeto**
-```
-git clone https://github.com/freitas022/webservices-springboot-jpa.git
-```
-**2. Executando o projeto utilizando docker-compose**
 
-Para isso é necessário ter instalado o [docker](https://www.docker.com/) em sua máquina.
-```
-docker compose up -d
-```
-**3. Testando os endpoints**
+
+**3. Faça o teste dos endpoints pela documentação do projeto**
 
 ```
 localhost:8080/swagger-ui.html

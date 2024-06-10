@@ -1,12 +1,11 @@
 package com.meuportifolio.curso.controllers;
 
+import java.net.URI;
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.meuportifolio.curso.dto.OrderDto;
 import com.meuportifolio.curso.entities.Order;
@@ -16,6 +15,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping(value = "/orders")
@@ -46,5 +46,13 @@ public class OrderController {
 	public ResponseEntity<OrderDto> findById(@PathVariable Long id) {
 		Order obj = service.findById(id);
 		return ResponseEntity.ok().body(new OrderDto(obj));
+	}
+
+	@PostMapping
+	public ResponseEntity<OrderDto> insert(@Valid @RequestBody OrderDto orderDto) {
+		orderDto = service.createOrder(orderDto);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(orderDto.getId()).toUri();
+		return ResponseEntity.created(uri).body(orderDto);
 	}
 }

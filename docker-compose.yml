@@ -1,42 +1,18 @@
 services:
-  # ====================================================================================================================
-  # POSTGRES SERVER
-  # ====================================================================================================================
   pg-docker:
-    image: postgres:16-alpine
+    image: postgres:15-alpine
     container_name: dev-postgresql
     environment:
-      POSTGRES_DB: e-shop
-      POSTGRES_PASSWORD: password
+      DB_NAME: e-shop
+      DB_USER: postgres
+      DB_PASSWORD: password
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
-      - ./.data/postgresql/data:/var/lib/postgresql/data
-    networks:
-      - dev-network
-    restart: unless-stopped
-
-  # ====================================================================================================================
-  # PGADMIN
-  # ====================================================================================================================
-  pgadmin-docker:
-    image: dpage/pgadmin4
-    container_name: dev-pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: me@example.com
-      PGADMIN_DEFAULT_PASSWORD: password
-    ports:
-      - 5050:80
-    volumes:
-      - ./.data/pgadmin:/var/lib/pgadmin
-    depends_on:
-      - pg-docker
+      - ./data/postgresql/data:/var/lib/postgresql/data
     networks:
       - dev-network
 
-# ======================================================================================================================
-# REDE
-# ======================================================================================================================
 networks:
   dev-network:
     driver: bridge

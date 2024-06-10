@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.meuportifolio.curso.entities.Order;
-import com.meuportifolio.curso.entities.OrderItem;
 import com.meuportifolio.curso.entities.enums.OrderStatus;
 
 
@@ -19,20 +18,16 @@ public class OrderDto {
     private CustomerDto customer; 
     private Set<OrderItemDto> items = new HashSet<>(); 
     private PaymentDto payment;
-    
+
+    public OrderDto() {}
+
     public OrderDto(Order entity) {
         this.id = entity.getId();
         this.moment = entity.getMoment();
         this.orderStatus = entity.getOrderStatus();
-        this.customer = new CustomerDto(entity.getClient());
-        this.items = convertToDto(entity.getItems());
+        this.customer = new CustomerDto(entity.getClient().getId(), entity.getClient().getName());
+        this.items = entity.getItems().stream().map(OrderItemDto::new).collect(Collectors.toSet());
         this.payment = (entity.getPayment() == null) ? null : new PaymentDto(entity.getPayment());
-    }
-
-    private Set<OrderItemDto> convertToDto(Set<OrderItem> orderItemList) {
-        return orderItemList.stream()
-                .map(OrderItemDto::new)
-                .collect(Collectors.toSet());
     }
 
     public Long getId() {

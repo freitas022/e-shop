@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.meuportifolio.curso.dto.ProductDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -69,5 +70,25 @@ class ProductControllerTest {
 		response.andExpect(status().isOk()).andDo(print()).andExpect(jsonPath("$.id").value(expected.getId()))
 				.andExpect(jsonPath("$.name").value(expected.getName()))
 				.andExpect(jsonPath("$.price").value(expected.getPrice()));
+	}
+
+	@Test
+	void testFindByName_ExactMatch() throws Exception {
+		// Arrange
+		String param = "English";
+		Product expected = new Product(1L, "English Course", "Lorem ipsum.", BigDecimal.TEN, "");
+
+		given(service.findByName(param)).willReturn(List.of(new ProductDto(expected)));
+
+		// Act
+		ResultActions response = this.mockMvc
+				.perform(get(BASE_URL + "/search?name=" + param)
+						.contentType(MediaType.APPLICATION_JSON));
+
+		// Assert
+		response.andExpect(status().isOk())
+				.andDo(print())
+				.andExpect(jsonPath("$[0].name").value(expected.getName()))
+				.andExpect(jsonPath("$[0].price").value(expected.getPrice()));
 	}
 }

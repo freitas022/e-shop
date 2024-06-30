@@ -1,11 +1,13 @@
 services:
   pg-docker:
-    image: postgres:15-alpine
+    image: postgres
     container_name: dev-postgresql
     environment:
-      DB_NAME: e-shop
-      DB_USER: postgres
-      DB_PASSWORD: password
+      POSTGRES_DB: e-shop
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+
+    restart: unless-stopped
     ports:
       - "5432:5432"
     volumes:

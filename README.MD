@@ -8,13 +8,13 @@ E-commerce project developed with the aim of exercising programming logic, data 
 ![Spring](https://img.shields.io/badge/spring-%236DB33F.svg?style=for-the-badge&logo=spring&logoColor=white)
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
-![React](https://shields.io/badge/react-black?logo=react&style=for-the-badge)
 
-### Build the project with maven
-
-    mvn clean package
-
-### Start app
+### Start the database (need docker installed)
 I will soon make the app available in docker-compose.yml
-
-    docker compose up -d
+```bash
+docker compose up -d
+```
+### Start the project with maven
+```bash
+mvn spring-boot:run #to run dev profile need start postgres
+```

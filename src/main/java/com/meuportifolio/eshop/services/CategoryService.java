@@ -5,6 +5,7 @@ import com.meuportifolio.eshop.repositories.CategoryRepository;
 import com.meuportifolio.eshop.services.exceptions.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,9 +23,9 @@ public class CategoryService {
 
 	public List<CategoryDto> findAll() {
 		LOGGER.info("category - find all");
-		return categoryRepository.findAll()
+		return categoryRepository.findAll(Sort.by(Sort.Direction.DESC, "name"))
 				.stream()
-				.map(CategoryDto::new)
+				.map(cat -> new CategoryDto(cat.getId(), cat.getName()))
 				.toList();
 	}
 

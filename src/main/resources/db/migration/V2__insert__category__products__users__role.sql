@@ -111,4 +111,11 @@ INSERT INTO tb_product_category (category_id, product_id) VALUES (9, 43);
 INSERT INTO tb_product_category (category_id, product_id) VALUES (9, 44);
 INSERT INTO tb_product_category (category_id, product_id) VALUES (9, 45);
 
-INSERT INTO tb_user(name, email, phone, password) VALUES ('Admin', 'admin@gmail.com', '22933334444', 'password');
+INSERT INTO tb_user(name, email, phone, password) VALUES ('Admin', 'admin@gmail.com', '22933334444', '$2a$12$GqkV8ZQCK36gFdFkwjSKx.SuLVaNy2GMlouv/bw9TlLIJTBnZ4ANG');
+INSERT INTO tb_user(name, email, phone, password) VALUES ('User', 'user@gmail.com', '21955556666', '$2a$12$GqkV8ZQCK36gFdFkwjSKx.SuLVaNy2GMlouv/bw9TlLIJTBnZ4ANG');
+
+INSERT INTO tb_role(authority) VALUES ('ROLE_ADMIN');
+INSERT INTO tb_role(authority) VALUES ('ROLE_USER');
+
+INSERT INTO tb_user_role(role_id, user_id) VALUES (1, 1);
+INSERT INTO tb_user_role(role_id, user_id) VALUES (2, 2);

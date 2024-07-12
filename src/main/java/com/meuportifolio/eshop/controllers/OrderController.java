@@ -8,13 +8,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/orders")
+@Validated
 @Tag(name = "Order", description = "Endpoints for managing orders.")
+@CrossOrigin("*")
 public class OrderController {
 
     private final OrderService orderService;
@@ -43,7 +46,7 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public OrderDto insert(@Valid @RequestBody OrderDto orderDto) {
+    public OrderDto insert(@RequestBody @Valid OrderDto orderDto) {
         return orderService.createOrder(orderDto);
     }
 }

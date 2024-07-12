@@ -2,20 +2,24 @@ package com.meuportifolio.eshop.dto;
 
 import com.meuportifolio.eshop.entities.Order;
 import com.meuportifolio.eshop.entities.enums.OrderStatus;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrderDto {
 
     private final Long id;
     private final Instant moment;
     private final OrderStatus orderStatus;
+    @NotNull(message = "Customer cannot be null.")
     private final CustomerDto customer;
-    private Set<OrderItemDto> items = new HashSet<>();
+    @NotEmpty(message = "Items cannot be empty.")
+    private List<@Valid OrderItemDto> items = new ArrayList<>();
     private final PaymentDto payment;
 
     public OrderDto(Long id, Instant moment, OrderStatus orderStatus, CustomerDto customer, PaymentDto payment) {
@@ -31,7 +35,7 @@ public class OrderDto {
         this.moment = entity.getMoment();
         this.orderStatus = entity.getOrderStatus();
         this.customer = new CustomerDto(entity.getClient().getId(), entity.getClient().getName());
-        this.items = entity.getItems().stream().map(OrderItemDto::new).collect(Collectors.toSet());
+        this.items = entity.getItems().stream().map(OrderItemDto::new).toList();
         this.payment = (entity.getPayment() == null) ? null : new PaymentDto(entity.getPayment());
     }
 
@@ -51,7 +55,7 @@ public class OrderDto {
         return customer;
     }
 
-    public Set<OrderItemDto> getItems() {
+    public List<OrderItemDto> getItems() {
         return items;
     }
 

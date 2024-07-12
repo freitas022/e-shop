@@ -1,6 +1,5 @@
 package com.meuportifolio.eshop.entities;
 
-import com.meuportifolio.eshop.config.DateConfig;
 import jakarta.persistence.*;
 
 import java.time.Instant;
@@ -37,7 +36,7 @@ public class Payment {
     }
 
     public Instant getMoment() {
-        return DateConfig.formatDate(moment);
+        return moment;
     }
 
     public void setMoment(Instant moment) {

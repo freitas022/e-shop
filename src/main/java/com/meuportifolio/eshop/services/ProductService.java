@@ -1,10 +1,14 @@
 package com.meuportifolio.eshop.services;
 
 import com.meuportifolio.eshop.dto.ProductDto;
+import com.meuportifolio.eshop.dto.ProductListDto;
+import com.meuportifolio.eshop.dto.ProductMinDto;
 import com.meuportifolio.eshop.repositories.ProductRepository;
 import com.meuportifolio.eshop.services.exceptions.ResourceNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,12 +24,11 @@ public class ProductService {
 		this.productRepository = productRepository;
 	}
 
-	public List<ProductDto> findAll() {
+	public ProductListDto findAll(int page, int pageSize) {
 		LOGGER.info("product - find all");
-		return productRepository.findAll()
-				.stream()
-				.map(ProductDto::new)
-				.toList();
+		var products = productRepository.findAll(PageRequest.of(page, pageSize, Sort.Direction.ASC, "name"))
+				.map(product -> new ProductMinDto(product.getId(), product.getName(), product.getDescription(), product.getPrice()));
+		 return new ProductListDto(products.getContent(), page, pageSize, products.getTotalElements());
 	}
 
 	public ProductDto findById(Long id) {

@@ -1,8 +1,8 @@
 package com.meuportifolio.eshop.entities;
 
-import com.meuportifolio.eshop.config.DateConfig;
 import com.meuportifolio.eshop.entities.enums.OrderStatus;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -15,6 +15,8 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @CreationTimestamp
     private Instant moment;
     private OrderStatus orderStatus;
 
@@ -47,7 +49,7 @@ public class Order {
     }
 
     public Instant getMoment() {
-        return DateConfig.formatDate(moment);
+        return moment;
     }
 
     public void setMoment(Instant moment) {

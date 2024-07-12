@@ -14,8 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -55,17 +53,18 @@ public class OrderService {
 	@Transactional
 	public OrderDto createOrder(OrderDto orderDto) {
 		// obtain user
-		var user = userRepository.getReferenceById(orderDto.getCustomer().id());
+		var user = userRepository.findById(orderDto.getCustomer().id())
+				.orElseThrow(ResourceNotFoundException::new);
 
 		// build order
 		var order = new Order();
-		order.setMoment(Instant.now().atZone(ZoneId.systemDefault()).toInstant());
 		order.setOrderStatus(OrderStatus.WAITING_PAYMENT);
 		order.setClient(user);
 
         orderDto.getItems().forEach(orderItem -> {
 			// find the product
-			var product = productRepository.getReferenceById(orderItem.productId());
+			var product = productRepository.findById(orderItem.productId())
+					.orElseThrow(ResourceNotFoundException::new);
 			// obtain items of orderDto
 			var item = new OrderItem(order, product, orderItem.quantity(), product.getPrice());
 			// add items to order list

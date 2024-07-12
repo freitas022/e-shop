@@ -1,6 +1,7 @@
 package com.meuportifolio.eshop.controllers;
 
 import com.meuportifolio.eshop.dto.ProductDto;
+import com.meuportifolio.eshop.dto.ProductListDto;
 import com.meuportifolio.eshop.services.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/products")
 @Tag(name = "Product", description = "Endpoints for managing products.")
+@CrossOrigin("*")
 public class ProductController {
 
     private final ProductService productService;
@@ -24,8 +26,9 @@ public class ProductController {
     @Operation(summary = "Should return the list of products")
     @ApiResponse(responseCode = "200", description = "Should return the list of products found if present or empty list.")
     @GetMapping
-    public List<ProductDto> findAll() {
-        return productService.findAll();
+    public ProductListDto findAll(@RequestParam(name = "page", defaultValue = "0") int page,
+                                        @RequestParam(name = "pageSize", defaultValue = "12") int pageSize) {
+        return productService.findAll(page, pageSize);
     }
 
     @Operation(summary = "Should return only one product.")

@@ -1,7 +1,5 @@
 package com.meuportifolio.eshop.controllers.exceptions;
 
-import com.meuportifolio.eshop.config.DateConfig;
-
 import java.time.Instant;
 
 public class StandardError {
@@ -9,22 +7,20 @@ public class StandardError {
     private Instant timestamp;
     private Integer status;
     private String error;
-    private String message;
     private String path;
 
     public StandardError() {
     }
 
-    public StandardError(Instant timestamp, Integer status, String error, String message, String path) {
+    public StandardError(Instant timestamp, Integer status, String error, String path) {
         this.timestamp = timestamp;
         this.status = status;
         this.error = error;
-        this.message = message;
         this.path = path;
     }
 
     public Instant getTimestamp() {
-        return DateConfig.formatDate(timestamp);
+        return timestamp;
     }
 
     public Integer getStatus() {
@@ -33,10 +29,6 @@ public class StandardError {
 
     public String getError() {
         return error;
-    }
-
-    public String getMessage() {
-        return message;
     }
 
     public String getPath() {

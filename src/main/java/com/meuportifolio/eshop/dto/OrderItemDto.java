@@ -1,10 +1,22 @@
 package com.meuportifolio.eshop.dto;
 
+import com.meuportifolio.eshop.entities.OrderItem;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 import java.math.BigDecimal;
 
-import com.meuportifolio.eshop.entities.OrderItem;
+public record OrderItemDto(
 
-public record OrderItemDto(Long productId, String name, BigDecimal price, Integer quantity, String imgUrl) {
+        Long productId,
+        String name,
+        BigDecimal price,
+
+        @NotNull(message = "Cannot be null or empty.")
+        @Positive(message = "More than 0")
+        Integer quantity,
+
+        String imgUrl) {
 
     public OrderItemDto(OrderItem entity) {
         this(entity.getProduct().getId(),

@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/users")
 @Tag(name = "User", description = "Endpoints for managing users.")
+@CrossOrigin("*")
 public class UserController {
 
     private final UserService userService;
@@ -36,7 +39,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Bad Request.")
     })
     @GetMapping(value = "/{id}")
-    public UserDto findById(@PathVariable Long id) {
+    public UserDto findById(@PathVariable @Positive Long id) {
         return userService.findById(id);
     }
 
@@ -47,7 +50,7 @@ public class UserController {
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto insert(@RequestBody UserDto obj) {
+    public UserDto insert(@RequestBody @Valid UserDto obj) {
         return userService.insert(obj);
     }
 
@@ -58,7 +61,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "Bad Request.")
     })
     @PutMapping(value = "/{id}")
-    public UserDto update(@PathVariable Long id, @RequestBody UserDto obj) {
+    public UserDto update(@PathVariable @Positive Long id, @RequestBody @Valid UserDto obj) {
         return userService.update(id, obj);
     }
 }

@@ -18,3 +18,48 @@ docker compose up -d
 ```bash
 mvn spring-boot:run #to run dev profile need start postgres
 ```
+
+### Start the frontend
+```bash
+#install dependencies
+yarn install
+#run
+yarn dev
+```
+---
+### Endpoints
+
+#### Authentication
+
+- POST **/sign-in**  - Authenticate user and return JWT token.
+- POST **/sign-up** - Create a new user.
+---
+#### Products
+
+- GET **/products** - Retrieve a list of products.
+- GET **/products/{id}** - Retrieve a product with the ID.
+---
+#### Categories
+
+- GET **/categories** - Retrieve a list of categories.
+- GET **/categories/{id}** - Retrieve a category with the ID.
+---
+#### Orders
+
+- POST **/orders** - Create a new order.
+- GET **/orders** - Retrieve a list of orders (ROLE_ADMIN only).
+- GET **/orders/{id}** - Retrieve an order with the ID (Authenticated only).
+---
+#### Users
+
+- GET **/users/{id}** - Retrieve a user with the ID.
+- GET **/users** - Retrieve a list of users.
+- PUT **/users/{id}** - Update an existing user.
+- POST **/users** - Create a new user.
+
+---
+Swagger doc:
+
+```
+localhost:8080/swagger-ui.html
+```

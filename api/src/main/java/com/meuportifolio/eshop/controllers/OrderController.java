@@ -44,6 +44,12 @@ public class OrderController {
         return orderService.findById(id);
     }
 
+    @Operation(summary = "Create a new order.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Created"),
+            @ApiResponse(responseCode = "422", description = "Invalid parameters."),
+            @ApiResponse(responseCode = "404", description = "Not Found.")
+    })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public OrderDto insert(@RequestBody @Valid OrderDto orderDto) {

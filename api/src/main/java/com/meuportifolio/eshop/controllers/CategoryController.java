@@ -35,7 +35,7 @@ public class CategoryController {
     @Operation(summary = "Should return only one category.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Success."),
-            @ApiResponse(responseCode = "204", description = "Should return category not found exception."),
+            @ApiResponse(responseCode = "404", description = "Should return category not found exception."),
             @ApiResponse(responseCode = "400", description = "Should return bad request.")
     })
     @GetMapping(value = "/{id}")

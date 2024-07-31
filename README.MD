@@ -61,5 +61,5 @@ yarn dev
 Swagger doc:
 
 ```
-localhost:8080/swagger-ui.html
+localhost:8080/swagger-ui/index.html
 ```

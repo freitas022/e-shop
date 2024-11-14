@@ -1,11 +1,14 @@
 package com.myapp.resources;
 
+import com.myapp.dtos.OrderDto;
 import com.myapp.dtos.UserDto;
 import com.myapp.entities.User;
 import com.myapp.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -26,6 +29,15 @@ public class UserResource {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<UserDto> findById(@PathVariable Long id) {
 		return ResponseEntity.ok().body(userService.findById(id));
+	}
+
+	@GetMapping(value = "/{id}/orders")
+	public ResponseEntity<List<OrderDto>> findOrdersByUserId(@PathVariable Long id) {
+		var ordersByUser = userService.findOrdersByUserId(id);
+		if (ordersByUser.isEmpty()) {
+			throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+		}
+		return ResponseEntity.ok().body(userService.findOrdersByUserId(id));
 	}
 	
 	@PostMapping

@@ -1,5 +1,6 @@
 package com.myapp.services;
 
+import com.myapp.dtos.OrderDto;
 import com.myapp.dtos.UserDto;
 import com.myapp.entities.User;
 import com.myapp.repositories.UserRepository;
@@ -12,7 +13,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -64,5 +64,10 @@ public class UserService {
 		entity.setName(obj.getName());
 		entity.setEmail(obj.getEmail());
 		entity.setPhone(obj.getPhone());
+	}
+
+	public List<OrderDto> findOrdersByUserId(Long id) {
+		var user =  userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
+		return user.getOrders().stream().map(OrderDto::new).toList();
 	}
 }

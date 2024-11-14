@@ -4,15 +4,16 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.myapp.entities.enums.OrderStatus;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@AllArgsConstructor
 @NoArgsConstructor
+@Getter @Setter
+@EqualsAndHashCode(of = "id")
 @Entity(name = "tb_order")
 public class Order {
 

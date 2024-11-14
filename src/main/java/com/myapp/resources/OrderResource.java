@@ -4,10 +4,7 @@ import com.myapp.dtos.OrderDto;
 import com.myapp.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,5 +23,10 @@ public class OrderResource {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<OrderDto> findById(@PathVariable Long id) {
 		return ResponseEntity.ok().body(orderService.findById(id));
+	}
+
+	@PostMapping
+	public ResponseEntity<OrderDto> create(@RequestBody OrderDto orderDto) {
+		return ResponseEntity.ok().body(orderService.create(orderDto));
 	}
 }

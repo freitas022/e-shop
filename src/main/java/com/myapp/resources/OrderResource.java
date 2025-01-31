@@ -4,6 +4,7 @@ import com.myapp.dtos.OrderDto;
 import com.myapp.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public class OrderResource {
 	private final OrderService orderService;
 	
 	@GetMapping
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<List<OrderDto>> findAll() {
 		return ResponseEntity.ok().body(orderService.findAll());
 	}

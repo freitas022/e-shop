@@ -3,6 +3,7 @@ package com.myapp.services;
 import com.myapp.dtos.OrderDto;
 import com.myapp.dtos.UserDto;
 import com.myapp.entities.User;
+import com.myapp.entities.enums.Role;
 import com.myapp.repositories.UserRepository;
 import com.myapp.services.exceptions.DatabaseException;
 import com.myapp.services.exceptions.ResourceNotFoundException;
@@ -30,7 +31,7 @@ public class UserService {
 	}
 	
 	public UserDto insert(User obj) {
-		var user = new User(obj.getName(), obj.getPhone(), obj.getEmail(), obj.getPassword());
+		var user = new User(obj.getName(), obj.getPhone(), obj.getEmail(), obj.getPassword(), Role.CUSTOMER);
 		userRepository.save(user);
 		return new UserDto(user);
 	}

@@ -1,6 +1,7 @@
 package com.myapp.entities;
 
 
+import com.myapp.entities.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,14 +23,16 @@ public class User {
     private String phone;
     private String email;
     private String password;
+    private Role role;
 
     @OneToMany(mappedBy = "client")
     private List<Order> orders;
 
-    public User(String name, String phone, String email, String password) {
+    public User(String name, String phone, String email, String password, Role role) {
         this.name = name;
         this.phone = phone;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 }

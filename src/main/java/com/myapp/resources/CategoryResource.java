@@ -1,7 +1,11 @@
 package com.myapp.resources;
 
+import com.myapp.dtos.CategoryDto;
+import com.myapp.dtos.UserDto;
 import com.myapp.entities.Category;
 import com.myapp.services.CategoryService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,14 +21,22 @@ import java.util.List;
 public class CategoryResource {
 
 	private final CategoryService categoryService;
-	
+
+	@Operation(summary = "Get all categories")
+	@ApiResponse(content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
+			schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = CategoryDto.class))}
+	)
 	@GetMapping
 	public ResponseEntity<List<Category>> findAll() {
 		
 		List<Category> list = categoryService.findAll();
 		return ResponseEntity.ok().body(list);
 	}
-	
+
+	@Operation(summary = "Get category by id")
+	@ApiResponse(content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
+			schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = CategoryDto.class))}
+	)
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<Category> findById(@PathVariable Long id) {
 		Category obj = categoryService.findById(id);

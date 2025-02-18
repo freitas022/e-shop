@@ -2,13 +2,13 @@ package com.myapp.resources;
 
 import com.myapp.dtos.AuthRequestDto;
 import com.myapp.services.JwtTokenProvider;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -22,6 +22,7 @@ public class AuthenticationController {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
 
+    @Operation(summary = "Authenticate user")
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody AuthRequestDto authRequestDto) {
         log.info("Attempting login for user: {}", authRequestDto.email());
@@ -35,6 +36,7 @@ public class AuthenticationController {
         return ResponseEntity.ok().body(accessToken);
     }
 
+    @Operation(summary = "Get info from authenticated user")
     @GetMapping("/user-info")
     public String getUserInfo(Principal principal) {
         if (principal != null) {

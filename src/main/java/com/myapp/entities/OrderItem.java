@@ -3,11 +3,12 @@ package com.myapp.entities;
 import com.myapp.entities.pk.OrderItemPK;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
+@AllArgsConstructor
 @NoArgsConstructor
+@Getter @Setter
+@ToString
 @Entity(name = "tb_order_item")
 public class OrderItem {
 

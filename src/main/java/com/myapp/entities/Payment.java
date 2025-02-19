@@ -2,13 +2,14 @@ package com.myapp.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.Instant;
 
-@Data
+@AllArgsConstructor
 @NoArgsConstructor
+@Getter @Setter
+@ToString
 @Entity(name = "tb_payment")
 public class Payment {
 

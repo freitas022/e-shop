@@ -2,14 +2,15 @@ package com.myapp.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@AllArgsConstructor
 @NoArgsConstructor
+@Getter @Setter
+@ToString(exclude = {"categories", "items"})
 @Entity(name = "tb_product")
 public class Product {
 

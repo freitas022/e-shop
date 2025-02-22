@@ -24,8 +24,11 @@ public class OrderResource {
     )
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<List<OrderDto>> findAll() {
-        return ResponseEntity.ok().body(orderService.findAll());
+    public ResponseEntity<List<OrderDto>> findAll(@RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
+                                                  @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                  @RequestParam(value = "orderBy", defaultValue = "moment") String orderBy,
+                                                  @RequestParam(value = "direction", defaultValue = "DESC") String direction) {
+        return ResponseEntity.ok().body(orderService.findAll(pageNumber, pageSize, orderBy, direction));
     }
 
 

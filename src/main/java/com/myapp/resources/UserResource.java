@@ -1,7 +1,6 @@
 package com.myapp.resources;
 
 import com.myapp.dtos.OrderDto;
-import com.myapp.dtos.ProductDto;
 import com.myapp.dtos.UserDto;
 import com.myapp.entities.User;
 import com.myapp.services.UserService;
@@ -31,8 +30,11 @@ public class UserResource {
 	)
 	@GetMapping
 	@PreAuthorize("hasAnyRole('ADMIN')")
-	public ResponseEntity<List<UserDto>> findAll() {
-		return ResponseEntity.ok().body(userService.findAll());
+	public ResponseEntity<List<UserDto>> findAll(@RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
+                                                 @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+                                                 @RequestParam(value = "orderBy", defaultValue = "name") String orderBy,
+                                                 @RequestParam(value = "direction", defaultValue = "DESC") String direction) {
+		return ResponseEntity.ok().body(userService.findAll(pageNumber, pageSize, orderBy, direction));
 	}
 
 	@Operation(summary = "Get user by id")

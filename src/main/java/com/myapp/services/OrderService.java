@@ -10,6 +10,8 @@ import com.myapp.repositories.ProductRepository;
 import com.myapp.repositories.UserRepository;
 import com.myapp.services.exceptions.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -24,8 +26,10 @@ public class OrderService {
 	private final ProductRepository productRepository;
 	private final OrderItemRepository orderItemRepository;
 
-	public List<OrderDto> findAll() {
-		return orderRepository.findAll().stream().map(OrderDto::new).toList();
+	public List<OrderDto> findAll(Integer pageNumber, Integer pageSize, String orderBy, String direction) {
+		var pageRequest = PageRequest.of(pageNumber, pageSize, Sort.Direction.valueOf(direction.toUpperCase()), orderBy);
+		var orders = orderRepository.findAll(pageRequest);
+		return orders.map(OrderDto::new).stream().toList();
 	}
 
 	public OrderDto findById(Long id) {

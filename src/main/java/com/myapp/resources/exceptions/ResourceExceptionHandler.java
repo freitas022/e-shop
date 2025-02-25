@@ -1,9 +1,6 @@
 package com.myapp.resources.exceptions;
 
-import com.myapp.services.exceptions.DatabaseException;
-import com.myapp.services.exceptions.JWTGenerationException;
-import com.myapp.services.exceptions.ResourceNotFoundException;
-import com.myapp.services.exceptions.UnauthorizedAccessException;
+import com.myapp.services.exceptions.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +32,7 @@ public class ResourceExceptionHandler {
 
 	@ExceptionHandler(UnauthorizedAccessException.class)
 	public ResponseEntity<StandardError> unauthorizedAccessHandler(UnauthorizedAccessException e, HttpServletRequest request) {
-		String error = "Database error";
+		String error = "Unauthorized";
 		HttpStatus status = HttpStatus.UNAUTHORIZED;
 		StandardError err = new StandardError(now, status.value(), error, e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
@@ -43,8 +40,16 @@ public class ResourceExceptionHandler {
 
 	@ExceptionHandler(JWTGenerationException.class)
 	public ResponseEntity<StandardError> JWTGenerationHandler(JWTGenerationException e, HttpServletRequest request) {
-		String error = "Database error";
+		String error = "Token is null or empty.";
 		HttpStatus status = HttpStatus.UNAUTHORIZED;
+		StandardError err = new StandardError(now, status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(CartEmptyException.class)
+	public ResponseEntity<StandardError> cartEmptyHandler(CartEmptyException e, HttpServletRequest request) {
+		String error = "Cart Empty.";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
 		StandardError err = new StandardError(now, status.value(), error, e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}

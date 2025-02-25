@@ -5,8 +5,11 @@ import com.myapp.services.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -48,5 +51,15 @@ public class OrderResource {
     @PostMapping
     public ResponseEntity<OrderDto> create(@RequestBody OrderDto orderDto) {
         return ResponseEntity.ok().body(orderService.create(orderDto));
+    }
+
+    @Operation(summary = "Create a new order from user cart")
+    @ApiResponse(content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
+            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = OrderDto.class))}
+    )
+    @PostMapping("/checkout")
+    public ResponseEntity<OrderDto> createFromCart(@AuthenticationPrincipal UserDetails userDetails) {
+        String userEmail = userDetails.getUsername();
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createFromCart(userEmail));
     }
 }

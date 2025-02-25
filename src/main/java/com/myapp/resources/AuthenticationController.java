@@ -2,11 +2,13 @@ package com.myapp.resources;
 
 import com.myapp.dtos.AuthRequestDto;
 import com.myapp.services.JwtTokenProvider;
+import com.myapp.services.exceptions.InvalidCredentialsException;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -26,15 +28,19 @@ public class AuthenticationController {
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody AuthRequestDto authRequestDto) {
         log.info("Attempting login for user: {}", authRequestDto.email());
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequestDto.email(), authRequestDto.password())
-        );
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authRequestDto.email(), authRequestDto.password())
+            );
 
-        log.info("Login successful for user: {}", authentication.getName());
-        var accessToken = jwtTokenProvider.generateToken(authentication.getName());
-
-        return ResponseEntity.ok().body(accessToken);
+            log.info("Login successful for user: {}", authentication.getName());
+            var accessToken = jwtTokenProvider.generateToken(authentication.getName());
+            return ResponseEntity.ok().body(accessToken);
+        } catch (BadCredentialsException e) {
+            throw new InvalidCredentialsException();
+        }
     }
+
 
     @Operation(summary = "Get info from authenticated user")
     @GetMapping("/user-info")

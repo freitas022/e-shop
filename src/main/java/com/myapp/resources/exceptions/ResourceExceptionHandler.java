@@ -48,9 +48,17 @@ public class ResourceExceptionHandler {
 
 	@ExceptionHandler(CartEmptyException.class)
 	public ResponseEntity<StandardError> cartEmptyHandler(CartEmptyException e, HttpServletRequest request) {
-		String error = "Cart Empty.";
+		String error = "The shopping cart cannot be empty.";
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		StandardError err = new StandardError(now, status.value(), error, e.getMessage(), request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(InvalidCredentialsException.class)
+	public ResponseEntity<StandardError> invalidCredentialsExceptionHandler(InvalidCredentialsException e, HttpServletRequest request) {
+		String error = "Failure to authentication.";
+		HttpStatus status = HttpStatus.UNAUTHORIZED;
+		StandardError err = new StandardError(now, status.value(), error,e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
 

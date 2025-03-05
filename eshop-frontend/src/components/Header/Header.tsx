@@ -11,7 +11,7 @@ function Header() {
         <>
             <Navbar bg="dark" variant="dark" className="sticky-top">
                 <Container>
-                    <Navbar.Brand href="#home">E-shop</Navbar.Brand>
+                    <Navbar.Brand href="/">E-shop</Navbar.Brand>
                     <Nav className="ml-auto">
                         {isAuthenticated ?
                             (

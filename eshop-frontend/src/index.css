@@ -1,9 +1,12 @@
 :root {
   --primary-color: #F8F8F8;
-  --secondary-color: #2ecc71;
   --font-family: 'Lato', sans-serif;
 }
 
 * {
   font-family: var(--font-family);
+}
+
+a {
+  text-decoration: none;
 }

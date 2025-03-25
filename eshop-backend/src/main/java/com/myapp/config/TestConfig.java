@@ -1,9 +1,14 @@
 package com.myapp.config;
 
-import com.myapp.entities.*;
-import com.myapp.entities.enums.OrderStatus;
-import com.myapp.entities.enums.Role;
-import com.myapp.repositories.*;
+import com.myapp.category.Category;
+import com.myapp.category.CategoryRepository;
+import com.myapp.order.*;
+import com.myapp.auth.Role;
+import com.myapp.payment.Payment;
+import com.myapp.product.Product;
+import com.myapp.product.ProductRepository;
+import com.myapp.user.User;
+import com.myapp.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +27,7 @@ public class TestConfig implements CommandLineRunner {
 	UserRepository userRepository;
 	
 	@Autowired
-	OrderRepository orderRepository;
+    OrderRepository orderRepository;
 	
 	@Autowired
 	CategoryRepository categoryRepository;

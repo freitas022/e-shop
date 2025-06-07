@@ -39,7 +39,7 @@ public class OrderResource {
                  schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = OrderDto.class))}
     )
     @GetMapping(value = "/{id}")
-    public ResponseEntity<OrderDto> findById(@PathVariable Long id) {
+    public ResponseEntity<OrderDto> findById(@PathVariable Integer id) {
         return ResponseEntity.ok().body(orderService.findById(id));
     }
 

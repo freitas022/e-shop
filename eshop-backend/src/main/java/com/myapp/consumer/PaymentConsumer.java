@@ -1,6 +1,7 @@
 package com.myapp.consumer;
 
-import com.myapp.payment.PaymentRequestDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.myapp.order.OrderEvent;
 import com.myapp.payment.PaymentService;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +16,10 @@ public class PaymentConsumer {
     private final PaymentService paymentService;
 
     @SqsListener(value = "order-placed-queue", maxConcurrentMessages = "10", maxMessagesPerPoll = "5")
-    public void handlePaymentRequest(PaymentRequestDto paymentRequest) throws InterruptedException {
-        log.info("Received payment request: {}", paymentRequest);
-        paymentService.processPayment(paymentRequest);
+        public void handlePaymentRequest(OrderEvent event) throws JsonProcessingException {
+        log.info("Received payment request: {}", event.order().getId());
+        var order = event.order();
+        paymentService.processPayment(order.getId());
     }
 }
 

@@ -5,8 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myapp.cart.CartService;
 import com.myapp.exceptions.CartEmptyException;
 import com.myapp.exceptions.ResourceNotFoundException;
-import com.myapp.exceptions.StockInsufficientException;
-import com.myapp.payment.PaymentRequestDto;
 import com.myapp.product.ProductRepository;
 import com.myapp.sqs.SqsService;
 import com.myapp.user.UserRepository;
@@ -47,38 +45,44 @@ public class OrderService {
 		return orders.map(OrderDto::new).stream().toList();
 	}
 
-	public OrderDto findById(Long id) {
+	public OrderDto findById(Integer id) {
 		return orderRepository.findById(id).map(OrderDto::new)
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
 	@Transactional
-	public OrderDto create(OrderDto orderDto) throws JsonProcessingException {
-		var order = new Order();
-		order.setMoment(Instant.parse(fmt.format(now)));
+	public OrderDto create(OrderDto orderDto) {
+		Order order = new Order();
+		order.setMoment(Instant.now());
 		order.setOrderStatus(OrderStatus.WAITING_PAYMENT);
+		order.setClient(userRepository.getReferenceById(orderDto.getClient().getId()));
 
-		var client = userRepository.getReferenceById(orderDto.getClient().getId());
-		order.setClient(client);
-
-		orderDto.getItems().forEach(orderItemDto -> {
-			var product = productRepository.getReferenceById(orderItemDto.getProductId());
-			if(product.getStockQuantity() < orderItemDto.getQuantity()) {
-				throw new StockInsufficientException(product.getId());
-			}
-			var item = new OrderItem(order, product, orderItemDto.getQuantity(), product.getPrice());
-			order.getItems().add(item);
-			product.setStockQuantity(product.getStockQuantity() - item.getQuantity());
-		});
+		for (OrderItemDto itemDto : orderDto.getItems()) {
+			var product = productRepository.getReferenceById(itemDto.getProductId());
+			order.getItems().add(new OrderItem(order, product, itemDto.getQuantity(), product.getPrice()));
+		}
 
 		orderRepository.save(order);
-		orderItemRepository.saveAll(order.getItems());
 
-		var paymentRequest = new PaymentRequestDto(order);
-		var message = objectMapper.writeValueAsString(paymentRequest);
-		sqsService.sendMessage(queueName, message);
+		sendOrderEvent(order);
 
 		return new OrderDto(order);
+	}
+
+    /**
+     *
+     * @param order
+     *
+     * dispatch event to the SQS queue when an order is created.
+     */
+	private void sendOrderEvent(Order order) {
+		try {
+			OrderDto dto = new OrderDto(order);
+			String message = objectMapper.writeValueAsString(new OrderEvent(dto));
+			sqsService.sendMessage(queueName, message);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("Failed to serialize order event", e);
+		}
 	}
 
 	@Transactional
@@ -92,11 +96,7 @@ public class OrderService {
 
 		cart.getItems().forEach(cartItem -> {
 			var product = cartItem.getId().getProduct();
-			if(product.getStockQuantity() < cartItem.getQuantity()) {
-				throw new StockInsufficientException(product.getId());
-			}
 
-			product.setStockQuantity(product.getStockQuantity() - cartItem.getQuantity());
 			productRepository.save(product);
 
 			var orderItem =  new OrderItem(order, product, cartItem.getQuantity(), product.getPrice());

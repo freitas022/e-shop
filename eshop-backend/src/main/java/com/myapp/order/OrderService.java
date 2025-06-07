@@ -1,13 +1,18 @@
 package com.myapp.order;
 
-import com.myapp.product.ProductRepository;
-import com.myapp.user.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myapp.cart.CartService;
 import com.myapp.exceptions.CartEmptyException;
 import com.myapp.exceptions.ResourceNotFoundException;
 import com.myapp.exceptions.StockInsufficientException;
+import com.myapp.payment.PaymentRequestDto;
+import com.myapp.product.ProductRepository;
+import com.myapp.sqs.SqsService;
+import com.myapp.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -29,6 +34,12 @@ public class OrderService {
 	private final ProductRepository productRepository;
 	private final OrderItemRepository orderItemRepository;
 	private final CartService cartService;
+	private final SqsService sqsService;
+	private final ObjectMapper objectMapper;
+
+	@Value("${sqs.cloud.aws.queue-name}")
+	private String queueName;
+
 
 	public List<OrderDto> findAll(Integer pageNumber, Integer pageSize, String orderBy, String direction) {
 		var pageRequest = PageRequest.of(pageNumber, pageSize, Sort.Direction.valueOf(direction.toUpperCase()), orderBy);
@@ -41,7 +52,8 @@ public class OrderService {
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
-	public OrderDto create(OrderDto orderDto) {
+	@Transactional
+	public OrderDto create(OrderDto orderDto) throws JsonProcessingException {
 		var order = new Order();
 		order.setMoment(Instant.parse(fmt.format(now)));
 		order.setOrderStatus(OrderStatus.WAITING_PAYMENT);
@@ -61,6 +73,10 @@ public class OrderService {
 
 		orderRepository.save(order);
 		orderItemRepository.saveAll(order.getItems());
+
+		var paymentRequest = new PaymentRequestDto(order);
+		var message = objectMapper.writeValueAsString(paymentRequest);
+		sqsService.sendMessage(queueName, message);
 
 		return new OrderDto(order);
 	}

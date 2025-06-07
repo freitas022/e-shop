@@ -1,5 +1,6 @@
 package com.myapp.order;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +48,7 @@ public class OrderResource {
             schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = OrderDto.class))}
     )
     @PostMapping
-    public ResponseEntity<OrderDto> create(@RequestBody OrderDto orderDto) {
+    public ResponseEntity<OrderDto> create(@RequestBody OrderDto orderDto) throws JsonProcessingException {
         return ResponseEntity.ok().body(orderService.create(orderDto));
     }
 

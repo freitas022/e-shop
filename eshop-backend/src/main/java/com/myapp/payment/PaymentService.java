@@ -2,6 +2,7 @@ package com.myapp.payment;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.myapp.consumer.EventType;
 import com.myapp.exceptions.ResourceNotFoundException;
 import com.myapp.order.*;
 import com.myapp.sqs.SqsService;
@@ -33,13 +34,13 @@ public class PaymentService {
         order.setOrderStatus(OrderStatus.PAID);
 
         log.info("Payment processed successfully for order: {}", order.getId());
-        sendOrderClosedEvent(order);
+        publishEvent(order);
     }
 
-    private void sendOrderClosedEvent(Order order) throws JsonProcessingException {
+    private void publishEvent(Order order) throws JsonProcessingException {
         var dto = new OrderDto(order);
-        var message = objectMapper.writeValueAsString(new OrderEvent(dto));
-        sqsService.sendMessage("order-closed-queue", message);
+        var message = objectMapper.writeValueAsString(new OrderEvent(dto, EventType.PAYMENT_PROCESSED));
+        sqsService.sendMessage("order-queue", message);
     }
 
 }

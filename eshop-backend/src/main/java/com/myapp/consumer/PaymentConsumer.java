@@ -15,7 +15,7 @@ public class PaymentConsumer {
 
     private final PaymentService paymentService;
 
-    @SqsListener(value = "order-placed-queue", maxConcurrentMessages = "10", maxMessagesPerPoll = "5")
+    @SqsListener(value = "payment-queue", maxConcurrentMessages = "10", maxMessagesPerPoll = "5")
         public void handlePaymentRequest(OrderEvent event) throws JsonProcessingException {
         log.info("Received payment request: {}", event.order().getId());
         var order = event.order();

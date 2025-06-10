@@ -1,6 +1,6 @@
 package com.myapp.order;
 
-public record OrderEvent(
-        OrderDto order
-) {
+import com.myapp.consumer.EventType;
+
+public record OrderEvent(OrderDto order, EventType eventType) {
 }

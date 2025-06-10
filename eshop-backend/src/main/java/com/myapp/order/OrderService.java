@@ -3,6 +3,7 @@ package com.myapp.order;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.myapp.cart.CartService;
+import com.myapp.consumer.EventType;
 import com.myapp.exceptions.CartEmptyException;
 import com.myapp.exceptions.ResourceNotFoundException;
 import com.myapp.product.ProductRepository;
@@ -10,7 +11,6 @@ import com.myapp.sqs.SqsService;
 import com.myapp.user.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -34,10 +34,6 @@ public class OrderService {
 	private final CartService cartService;
 	private final SqsService sqsService;
 	private final ObjectMapper objectMapper;
-
-	@Value("${sqs.cloud.aws.queue-name}")
-	private String queueName;
-
 
 	public List<OrderDto> findAll(Integer pageNumber, Integer pageSize, String orderBy, String direction) {
 		var pageRequest = PageRequest.of(pageNumber, pageSize, Sort.Direction.valueOf(direction.toUpperCase()), orderBy);
@@ -64,7 +60,7 @@ public class OrderService {
 
 		orderRepository.save(order);
 
-		sendOrderEvent(order);
+		publishEvent(order);
 
 		return new OrderDto(order);
 	}
@@ -75,11 +71,11 @@ public class OrderService {
      *
      * dispatch event to the SQS queue when an order is created.
      */
-	private void sendOrderEvent(Order order) {
+	private void publishEvent(Order order) {
 		try {
 			OrderDto dto = new OrderDto(order);
-			String message = objectMapper.writeValueAsString(new OrderEvent(dto));
-			sqsService.sendMessage(queueName, message);
+			String message = objectMapper.writeValueAsString(new OrderEvent(dto, EventType.ORDER_CREATED));
+			sqsService.sendMessage("payment-queue", message);
 		} catch (JsonProcessingException e) {
 			throw new RuntimeException("Failed to serialize order event", e);
 		}

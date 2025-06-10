@@ -14,11 +14,13 @@ public class InventoryConsumer {
 
     private final InventoryService inventoryService;
 
-    @SqsListener("order-closed-queue")
+    @SqsListener("order-queue")
     public void handleOrderClosed(OrderEvent event) {
         log.info("Processing inventory update for order: {}", event.order().getId());
         var order = event.order();
-        inventoryService.decreaseStock(order);
+        if (event.eventType().equals(EventType.PAYMENT_PROCESSED)) {
+            inventoryService.decreaseStock(order);
+        }
     }
 }
 

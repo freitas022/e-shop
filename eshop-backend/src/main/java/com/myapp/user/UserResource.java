@@ -1,5 +1,6 @@
 package com.myapp.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.myapp.order.OrderDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -51,7 +52,7 @@ public class UserResource {
 	public ResponseEntity<List<OrderDto>> findOrdersByUserId(@PathVariable Long id) {
 		var ordersByUser = userService.findOrdersByUserId(id);
 		if (ordersByUser.isEmpty()) {
-			throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+			return ResponseEntity.noContent().build();
 		}
 		return ResponseEntity.ok().body(userService.findOrdersByUserId(id));
 	}
@@ -61,7 +62,7 @@ public class UserResource {
 			schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserDto.class))}
 	)
 	@PostMapping
-	public ResponseEntity<UserDto> insert (@RequestBody User obj) {
+	public ResponseEntity<UserDto> insert (@RequestBody User obj) throws JsonProcessingException {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(obj.getId()).toUri();
 		return ResponseEntity.created(uri).body(userService.insert(obj));

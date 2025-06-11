@@ -1,9 +1,14 @@
 package com.myapp.auth;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.myapp.exceptions.InvalidCredentialsException;
+import com.myapp.user.UserRequestDto;
+import com.myapp.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,6 +26,7 @@ public class AuthenticationController {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
+    private final UserService userService;
 
     @Operation(summary = "Authenticate user")
     @PostMapping("/authenticate")
@@ -39,6 +45,13 @@ public class AuthenticationController {
         }
     }
 
+    @Operation(summary = "Register new user")
+    @PostMapping("/sign-up")
+    public ResponseEntity<?> signup(@RequestBody @Valid UserRequestDto userRequestDto) throws JsonProcessingException {
+        log.info("New user registration attempt: {}", userRequestDto);
+        userService.insert(userRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 
     @Operation(summary = "Get info from authenticated user")
     @GetMapping("/user-info")

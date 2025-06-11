@@ -1,18 +1,13 @@
 package com.myapp.user;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.myapp.order.OrderDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -55,17 +50,6 @@ public class UserResource {
 			return ResponseEntity.noContent().build();
 		}
 		return ResponseEntity.ok().body(userService.findOrdersByUserId(id));
-	}
-
-	@Operation(summary = "Create new user")
-	@ApiResponse(content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
-			schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = UserDto.class))}
-	)
-	@PostMapping
-	public ResponseEntity<UserDto> insert (@RequestBody User obj) throws JsonProcessingException {
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(obj.getId()).toUri();
-		return ResponseEntity.created(uri).body(userService.insert(obj));
 	}
 
 	@Operation(summary = "Delete user by id")

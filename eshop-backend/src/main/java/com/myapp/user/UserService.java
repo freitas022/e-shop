@@ -39,13 +39,12 @@ public class UserService {
 				.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
-	public UserDto insert(User obj) throws JsonProcessingException {
-		var userCreated = new User(obj.getName(), obj.getPhone(), obj.getEmail(), passwordEncoder.encode(obj.getPassword()), Role.CUSTOMER);
+	public void insert(UserRequestDto obj) throws JsonProcessingException {
+		var userCreated = new User(obj.name(), obj.phone(), obj.email(), passwordEncoder.encode(obj.password()), Role.CUSTOMER);
 		userRepository.save(userCreated);
 		var user = new UserDto(userCreated);
 		var msg = objectMapper.writeValueAsString(new UserEvent(user, EventType.USER_CREATED));
 		sqsService.sendMessage("user-queue", msg);
-		return user;
 	}
 
 	public void delete(Long id) {

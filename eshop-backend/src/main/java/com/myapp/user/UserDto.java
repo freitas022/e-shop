@@ -9,13 +9,13 @@ public class UserDto {
 
     private Long id;
     private String name;
-    private String phone;
     private String email;
+    private String phone;
 
     public UserDto(User user) {
         id = user.getId();
         name = user.getName();
-        phone = user.getPhone();
         email = user.getEmail();
+        phone = user.getPhone();
     }
 }

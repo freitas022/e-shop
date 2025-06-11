@@ -15,7 +15,6 @@ public class EmailService implements NotificationService {
 
     @Override
     public void send(MessageSender messageSender) {
-        log.info("Sending email to: {}", messageSender.to());
         SendEmailRequest request = SendEmailRequest.builder()
                 .destination(Destination.builder().toAddresses(messageSender.to()).build())
                 .message(Message.builder()
@@ -25,5 +24,6 @@ public class EmailService implements NotificationService {
                 .source("test@mail.com")
                 .build();
         sesClient.sendEmail(request);
+        log.info("Email sent!");
     }
 }

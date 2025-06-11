@@ -1,0 +1,23 @@
+services:
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack-dev
+    environment:
+      - SERVICES=sqs,ses,sns
+    ports:
+      - "4566:4566"
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres-dev
+    environment:
+      - POSTGRES_USER=dev
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=eshop
+    ports:
+      - "5432:5432"
+    volumes:
+      - eshop_db_data:/var/lib/postgresql/data
+
+volumes:
+  eshop_db_data:

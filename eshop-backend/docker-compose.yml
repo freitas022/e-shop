@@ -17,7 +17,26 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - eshop_db_data:/var/lib/postgresql/data
+      - pgdata_eshop:/var/lib/postgresql/data
+
+  eshop-app:
+    image: freitas022/e-shop-backend:202506120230
+    container_name: eshop-app-dev
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/eshop
+      - SPRING_DATASOURCE_USERNAME=dev
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_CLOUD_AWS_REGION_STATIC=us-east-1
+      - SPRING_CLOUD_AWS_CREDENTIALS_ACCESS_KEY_ID=test
+      - SPRING_CLOUD_AWS_CREDENTIALS_SECRET_KEY=test
+      - SPRING_CLOUD_AWS_ENDPOINT=http://localstack:4566
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+      - localstack
 
 volumes:
-  eshop_db_data:
+  pgdata_eshop:
+    external: true

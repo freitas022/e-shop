@@ -3,6 +3,7 @@ package com.myapp.exceptions;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -59,6 +60,18 @@ public class ResourceExceptionHandler {
 		HttpStatus status = HttpStatus.UNAUTHORIZED;
 		StandardError err = new StandardError(now, status.value(), error,e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<?> validationExceptionHandler(MethodArgumentNotValidException e, HttpServletRequest request) {
+		var error = "Validation Error";
+		var errors = e.getBindingResult().getFieldErrors()
+				.stream()
+				.map(fieldError -> new FieldValidationError(fieldError.getField(), fieldError.getDefaultMessage()))
+				.toList();
+
+		var err = new ValidationErrorResponse(now, HttpStatus.BAD_REQUEST.value(), error, request.getRequestURI(), errors);
+		return ResponseEntity.badRequest().body(err);
 	}
 
 	@ExceptionHandler(RuntimeException.class)

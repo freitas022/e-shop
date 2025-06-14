@@ -3,10 +3,11 @@ package com.myapp.product;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,11 +21,8 @@ public class ProductResource {
 			schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ProductDto.class))}
 	)
 	@GetMapping
-	public ResponseEntity<List<ProductDto>> findAll(@RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
-													@RequestParam(value = "pageSize", defaultValue = "6") Integer pageSize,
-													@RequestParam(value = "orderBy", defaultValue = "price") String orderBy,
-													@RequestParam(value = "direction", defaultValue = "DESC") String direction) {
-		return ResponseEntity.ok().body(productService.findAll(pageNumber, pageSize, orderBy, direction));
+	public ResponseEntity<PagedResponse<ProductDto>> findAll(@PageableDefault(page = 0, size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+		return ResponseEntity.ok().body(productService.findAll(pageable));
 	}
 
 	@Operation(summary = "Get product by id")
@@ -34,5 +32,17 @@ public class ProductResource {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<ProductDto> findById(@PathVariable Long id) {
 		return ResponseEntity.ok().body(productService.findById(id));
+	}
+
+	@Operation(summary = "Search products by name")
+	@ApiResponse(content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
+			schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ProductDto.class))}
+	)
+	@GetMapping("/search")
+	public ResponseEntity<PagedResponse<ProductDto>> searchProducts(
+			@RequestParam(value = "name", defaultValue = "") String name,
+			@PageableDefault(page = 0, size = 12, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
+
+		return ResponseEntity.ok(productService.searchProduct(name, pageable));
 	}
 }

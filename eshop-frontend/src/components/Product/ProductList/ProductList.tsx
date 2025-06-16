@@ -4,37 +4,35 @@ import { Link } from "react-router-dom";
 import * as productService from "../../../services/product-service";
 import { ProductDto } from "../../../types/ProductDto";
 import ProductCard from "../ProductCard/ProductCard";
+import { PagedResponse } from "../../../types/PagedResponse";
 
 function ProductList() {
-    
-    const [products, setProducts] = useState<ProductDto[]>([]);
+
+    const [pageData, setPageData] = useState<PagedResponse<ProductDto>>();
     const [pageNumber, setPageNumber] = useState(0);
     const [pageSize] = useState(12);
     const [loading, setLoading] = useState(false);
-    const [hasMorePages, setHasMorePages] = useState(true);
 
     useEffect(() => {
-        if (loading) return;
-
         setLoading(true);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({ top: 0, behavior: "smooth" });
 
-        setTimeout(() => {
-            productService.findAll(pageNumber, pageSize)
-                .then(response => {
-                    setProducts(response.data);
-                    setHasMorePages(response.data.length === pageSize);
-                    setLoading(false);
-                })
-                .catch(() => {
-                    setLoading(false);
-                });
-        }, 1500);
-
+        productService
+            .findAll({ page: pageNumber, size: pageSize })
+            .then((response) => {
+                setPageData(response.data);
+            })
+            .finally(() => setLoading(false));
     }, [pageNumber, pageSize]);
 
     function handlePageChange(page: number) {
-        setPageNumber(page);
+        if (
+            page !== pageNumber &&
+            page >= 0 &&
+            page < (pageData?.totalPages ?? 1)
+        ) {
+            setPageNumber(page);
+        }
     }
 
     return (
@@ -46,7 +44,7 @@ function ProductList() {
             ) : (
                 <>
                     <Row sm={2} md={3} lg={4}>
-                        {products.map((product) => (
+                        {pageData?.content.map((product) => (
                             <Col key={product.id} className="p-2">
                                 <Link to={`/products/${product.id}`}>
                                     <ProductCard product={product} />
@@ -55,14 +53,37 @@ function ProductList() {
                         ))}
                     </Row>
 
-                    <div className="d-flex justify-content-center mt-3">
-                        <Pagination>
-                            <Pagination.First onClick={() => handlePageChange(0)} disabled={pageNumber === 0} />
-                            <Pagination.Prev onClick={() => handlePageChange(pageNumber - 1)} disabled={pageNumber === 0} />
-                            <Pagination.Item active>{pageNumber + 1}</Pagination.Item>
-                            <Pagination.Next onClick={() => handlePageChange(pageNumber + 1)} disabled={!hasMorePages} />
-                        </Pagination>
-                    </div>
+                    {pageData && pageData.totalPages > 1 && (
+                        <div className="d-flex justify-content-center mt-3">
+                            <Pagination>
+                                <Pagination.First
+                                    onClick={() => handlePageChange(0)}
+                                    disabled={pageNumber === 0}
+                                />
+                                <Pagination.Prev
+                                    onClick={() => handlePageChange(pageNumber - 1)}
+                                    disabled={pageNumber === 0}
+                                />
+                                {[...Array(pageData.totalPages)].map((_, idx) => (
+                                    <Pagination.Item
+                                        key={idx}
+                                        active={idx === pageNumber}
+                                        onClick={() => handlePageChange(idx)}
+                                    >
+                                        {idx + 1}
+                                    </Pagination.Item>
+                                ))}
+                                <Pagination.Next
+                                    onClick={() => handlePageChange(pageNumber + 1)}
+                                    disabled={pageNumber === pageData.totalPages - 1}
+                                />
+                                <Pagination.Last
+                                    onClick={() => handlePageChange(pageData.totalPages - 1)}
+                                    disabled={pageNumber === pageData.totalPages - 1}
+                                />
+                            </Pagination>
+                        </div>
+                    )}
                 </>
             )}
         </Container>

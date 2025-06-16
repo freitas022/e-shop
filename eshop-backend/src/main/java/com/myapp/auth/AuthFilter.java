@@ -2,6 +2,7 @@ package com.myapp.auth;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
@@ -33,22 +34,25 @@ public class AuthFilter extends OncePerRequestFilter {
         if (token.isPresent()) {
             log.debug("Token found in request: {}", token.get());
             jwtTokenProvider.validateToken(token.get()).ifPresentOrElse(username -> {
-                // Set authentication in SecurityContext
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.info("Authentication set for user: {}", username);
-            }, () -> log.warn("Failed to validate token"));
-            }
-        filterChain.doFilter(request, response);
 
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }, () -> log.warn("Failed to validate token"));
+        }
+        filterChain.doFilter(request, response);
     }
 
     private Optional<String> getTokenFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return Optional.of(bearerToken.substring(7));
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("accessToken".equals(cookie.getName())) {
+                    return Optional.of(cookie.getValue());
+                }
+            }
         }
         return Optional.empty();
     }

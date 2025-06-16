@@ -61,7 +61,6 @@ public class JwtTokenProvider {
                     .build()
                     .verify(token)
                     .getSubject();
-            log.info("Token validated successfully");
             return Optional.ofNullable(subject);
         } catch (JWTDecodeException decodeException) {
             log.error("Failed to decode JWT token", decodeException);

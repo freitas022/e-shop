@@ -51,6 +51,17 @@ public class CartService {
         return cartRepository.save(cart);
     }
 
+    public Cart updateCartItem(String email, AddToCartRequestDto request) {
+        Cart cart = getCartByUser(email);
+        cart.getItems().stream()
+                .filter(item -> item.getId().getProduct().getId().equals(request.productId()))
+                .findFirst()
+                .ifPresent(item -> item.setQuantity(request.quantity()));
+        cart.getItems().removeIf(item -> item.getQuantity() <= 0);
+        cartRepository.save(cart);
+        return cart;
+    }
+
     public void clearCart(String userEmail) {
         Cart cart = getCartByUser(userEmail);
         cart.getItems().clear();

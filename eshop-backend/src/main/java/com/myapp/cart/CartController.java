@@ -49,6 +49,14 @@ public class CartController {
         return ResponseEntity.ok(new CartDto(result));
     }
 
+    @Operation(summary = "Update quantity of a product in the cart")
+    @PutMapping("/update-item")
+    public ResponseEntity<CartDto> updateCartItem(@RequestBody AddToCartRequestDto request) {
+        var user = securityUtils.getAuthenticatedUsername();
+        var result = cartService.updateCartItem(user.email(), request);
+        return ResponseEntity.ok(new CartDto(result));
+    }
+
     @Operation(summary = "Clear the cart")
     @ApiResponse(responseCode = "204")
     @DeleteMapping("/clear")

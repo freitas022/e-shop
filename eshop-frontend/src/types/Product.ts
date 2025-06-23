@@ -1,4 +1,4 @@
-import { CategoryDto } from "./CategoryDto";
+import { CategoryDto } from "./Category";
 
 export interface ProductDto {
     id: number;

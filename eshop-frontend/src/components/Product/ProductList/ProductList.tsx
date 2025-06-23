@@ -2,9 +2,9 @@ import { useEffect, useState } from "react";
 import { Col, Container, Pagination, Row, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import * as productService from "../../../services/product-service";
-import { ProductDto } from "../../../types/ProductDto";
-import ProductCard from "../ProductCard/ProductCard";
 import { PagedResponse } from "../../../types/PagedResponse";
+import { ProductDto } from "../../../types/Product";
+import ProductCard from "../ProductCard/ProductCard";
 
 function ProductList() {
 

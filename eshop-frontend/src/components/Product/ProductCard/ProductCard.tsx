@@ -1,5 +1,6 @@
 import { Card, Stack } from "react-bootstrap";
-import { ProductDto } from "../../../types/ProductDto";
+import { ProductDto } from "../../../types/Product";
+import { BsBoxSeam } from "react-icons/bs";
 
 type Props = {
     product: ProductDto;
@@ -12,15 +13,14 @@ function ProductCard({ product }: Props) {
         <Stack direction="vertical" gap={3} key={product.id}>
 
             <Card style={{ boxShadow: "0 0 10px rgba(0,0,0,0.1)" }}>
-                <Card.Img
-                    src="https://png.pngtree.com/png-clipart/20241125/original/pngtree-robot-photo-png-image_17308416.png"
-                    alt={product.name}
-                />
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: 120 }}>
+                    <BsBoxSeam size={48} color="#adb5bd" />
+                </div>
                 <Card.Body>
                     <Card.Title className="fw-bold">
                         {product.name}
                     </Card.Title>
-                    <Card.Text style={{fontSize: "0.95em"}}>
+                    <Card.Text style={{ fontSize: "0.95em" }}>
                         {product.description}
                     </Card.Text>
                     <Card.Text style={{ fontSize: "1.2em", fontWeight: "bold", color: "#28a745" }}>

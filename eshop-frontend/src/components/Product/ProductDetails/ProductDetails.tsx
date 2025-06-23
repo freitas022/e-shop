@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react';
+import { Alert, Button, Col, Container, Form, Row } from 'react-bootstrap';
+import { BsBoxSeam, BsCart } from 'react-icons/bs';
 import { useParams } from 'react-router-dom';
-import { ProductDto } from '../../../types/ProductDto';
+import { useCart } from '../../../context/CartContext';
+import * as cartService from '../../../services/cart-service';
 import * as productService from '../../../services/product-service';
-import { Col, Container, Row, Image, Form, Button } from 'react-bootstrap';
-import { BsCart } from 'react-icons/bs';
+import { ProductDto } from '../../../types/Product';
 
 function ProductDetails() {
     const params = useParams();
     const [product, setProduct] = useState<ProductDto>();
     const [quantity, setQuantity] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [feedback, setFeedback] = useState<{ type: "success" | "danger", message: string } | null>(null);
+    const { fetchCart } = useCart();
 
     useEffect(() => {
         productService.findById(Number(params.productId))
@@ -17,6 +22,26 @@ function ProductDetails() {
             });
     }, [params.productId]);
 
+    function handleAddToCart() {
+        if (!product) return;
+        setLoading(true);
+        setFeedback(null);
+
+        cartService.addToCart({ productId: product.id, quantity })
+            .then(() => {
+                setFeedback({ type: "success", message: "Produto adicionado ao carrinho!" });
+            })
+            .then(() => fetchCart())
+            .catch((err) => {
+                setFeedback({
+                    type: "danger",
+                    message:
+                        err.response.data.message
+                });
+            })
+            .finally(() => setLoading(false));
+    }
+
     return (
         <section>
             <Container className="my-5 d-flex flex-column border rounded">
@@ -24,19 +49,26 @@ function ProductDetails() {
                     <>
                         <Row className="p-5">
                             {/* Coluna da Imagem e Miniaturas */}
-                            <Col md={6} className="d-flex flex-column align-items-baseline">
-                                <Image
-                                    src="https://png.pngtree.com/png-clipart/20241125/original/pngtree-robot-photo-png-image_17308416.png"
-                                    alt={product.name}
-                                    fluid
-                                    className="border rounded mb-3"
-                                />
+                            <Col md={6}>
+
+                                <div
+                                    className="d-flex align-items-center justify-content-center bg-light"
+                                    style={{ height: "100%", width: "100%" }}
+                                >
+                                    <BsBoxSeam size={48} color="#adb5bd" />
+                                </div>
                             </Col>
 
                             {/* Coluna de Detalhes */}
                             <Col md="6">
                                 <h2>{product.name}</h2>
                                 <h2 className="text-success">R$ {product.price.toFixed(2)}</h2>
+
+                                {feedback && (
+                                    <Alert variant={feedback.type} className="my-2">
+                                        {feedback.message}
+                                    </Alert>
+                                )}
 
                                 <Form>
                                     <Form.Group controlId="quantity" className="mb-3 d-flex align-items-center">
@@ -52,9 +84,18 @@ function ProductDetails() {
                                         </Form.Select>
                                     </Form.Group>
 
-                                    <Button variant="dark" size="lg" className="w-100 mb-2">Comprar Agora</Button>
-                                    <Button variant="dark" size="lg" className="w-100">
-                                        <BsCart className="me-2" /> Adicionar ao Carrinho
+                                    <Button variant="dark" size="lg" className="w-100 mb-2" disabled={loading}>
+                                        Comprar Agora
+                                    </Button>
+                                    <Button
+                                        variant="primary"
+                                        size="lg"
+                                        className="w-100"
+                                        disabled={loading}
+                                        onClick={handleAddToCart}
+                                    >
+                                        <BsCart className="me-2" />
+                                        {loading ? "Adicionando..." : "Adicionar ao Carrinho"}
                                     </Button>
                                 </Form>
                             </Col>
@@ -63,10 +104,7 @@ function ProductDetails() {
                             <Col md="auto" className="d-flex flex-column justify-content-center p-3">
                                 <h4 className="mt-2 mb-3">Descrição do produto</h4>
                                 <p>
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent orci libero, convallis et suscipit ac, suscipit a ante. Aenean eget dictum eros. Nam feugiat varius metus, ut imperdiet nisl porta nec. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Cras a mi posuere, tempor massa sed, accumsan lacus. Nullam eleifend, magna nec consectetur viverra, neque urna feugiat enim, auctor auctor felis augue quis enim. Suspendisse pulvinar ullamcorper leo eu auctor.
-                                </p>
-                                <p>
-                                    Suspendisse eleifend odio nec varius feugiat. Quisque euismod accumsan tellus sed tincidunt. Curabitur hendrerit tempor maximus. Nullam vitae nulla consequat, porta purus quis, dignissim risus. In ligula ex, iaculis at tincidunt et, porttitor a metus. Praesent tristique ut orci in aliquet. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nulla quis dui leo. Maecenas tristique mauris sed augue cursus blandit sed at dui. Nullam in tempus ante, eu hendrerit nisl.
+                                    {product.description}
                                 </p>
                             </Col>
                         </Row>

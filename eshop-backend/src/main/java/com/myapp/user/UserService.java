@@ -87,4 +87,9 @@ public class UserService {
 		var user =  userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(id));
 		return user.getOrders().stream().map(OrderDto::new).toList();
 	}
+
+    public UserDto findByEmail(String email) {
+        return userRepository.findByEmail(email).map(UserDto::new)
+                .orElseThrow(() -> new ResourceNotFoundException(email));
+    }
 }

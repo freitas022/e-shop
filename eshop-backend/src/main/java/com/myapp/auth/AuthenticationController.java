@@ -1,7 +1,9 @@
 package com.myapp.auth;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.myapp.user.UserDto;
 import com.myapp.user.UserRequestDto;
+import com.myapp.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -11,9 +13,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.Principal;
 
 @RestController
 @RequestMapping("/auth")
@@ -22,6 +23,7 @@ import java.security.Principal;
 public class AuthenticationController {
 
     private final AuthenticationService authService;
+    private final UserService userService;
 
     @Operation(summary = "Authenticate user")
     @PostMapping("/authenticate")
@@ -47,9 +49,12 @@ public class AuthenticationController {
     }
 
     @Operation(summary = "Get info from authenticated user")
-    @GetMapping("/user-info")
-    public ResponseEntity<?> getUserInfo(Principal principal) {
-        var info = authService.getUserInfo(principal);
-        return ResponseEntity.ok(info);
+    @GetMapping("/me")
+    public ResponseEntity<UserDto> getUserInfo(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        var user = userService.findByEmail(authentication.getName());
+        return ResponseEntity.ok(user);
     }
 }

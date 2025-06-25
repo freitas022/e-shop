@@ -20,7 +20,7 @@ services:
       - pgdata_eshop:/var/lib/postgresql/data
 
   eshop-app:
-    image: freitas022/e-shop-backend:202506120230
+    image: freitas022/e-shop-backend
     container_name: eshop-app-dev
     environment:
       - SPRING_PROFILES_ACTIVE=dev

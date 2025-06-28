@@ -1,8 +1,6 @@
 package com.myapp.config;
 
 import com.myapp.auth.AuthFilter;
-import com.myapp.auth.CustomUserDetailsService;
-import com.myapp.auth.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,8 +28,8 @@ import java.util.List;
 @EnableMethodSecurity
 public class WebSecurityConfig {
 
-    private final CustomUserDetailsService customUserDetailsService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthFilter authFilter;
+    private final CustomAuthEntryPoint authEntryPoint;
 
     private static final String[] PUBLIC_URLS = {"/h2-console/**", "/products/**", "/categories/**", "/auth/**", "/swagger-ui/**", "/v3/api-docs/**"};
 
@@ -45,7 +43,8 @@ public class WebSecurityConfig {
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new AuthFilter(jwtTokenProvider, customUserDetailsService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex.authenticationEntryPoint(authEntryPoint))
                 .build();
     }
 

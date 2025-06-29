@@ -12,21 +12,19 @@ import java.time.Instant;
 @ControllerAdvice
 public class ResourceExceptionHandler {
 
-	private static final Instant now = Instant.now();
-
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<StandardError> resourceNotFoundHandler(ResourceNotFoundException e, HttpServletRequest request) {
 		String error = "Resource not found";
 		HttpStatus status = HttpStatus.NOT_FOUND;
-		StandardError err = new StandardError(now, status.value(), error, e.getMessage(), request.getRequestURI());
+		StandardError err = createStandardError(status, error, e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
-	
+
 	@ExceptionHandler(DatabaseException.class)
 	public ResponseEntity<StandardError> databaseHandler(DatabaseException e, HttpServletRequest request) {
 		String error = "Database error";
 		HttpStatus status = HttpStatus.BAD_REQUEST;
-		StandardError err = new StandardError(now, status.value(), error, e.getMessage(), request.getRequestURI());
+		StandardError err = createStandardError(status, error, e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
 
@@ -34,15 +32,15 @@ public class ResourceExceptionHandler {
 	public ResponseEntity<StandardError> unauthorizedAccessHandler(UnauthorizedAccessException e, HttpServletRequest request) {
 		String error = "Unauthorized";
 		HttpStatus status = HttpStatus.UNAUTHORIZED;
-		StandardError err = new StandardError(now, status.value(), error, e.getMessage(), request.getRequestURI());
+		StandardError err = createStandardError(status, error, e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
 
 	@ExceptionHandler(JWTGenerationException.class)
 	public ResponseEntity<StandardError> JWTGenerationHandler(JWTGenerationException e, HttpServletRequest request) {
-		String error = "Token is null or empty.";
+		String error = "JWT Generation Error";
 		HttpStatus status = HttpStatus.UNAUTHORIZED;
-		StandardError err = new StandardError(now, status.value(), error, e.getMessage(), request.getRequestURI());
+		StandardError err = createStandardError(status, error, e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
 
@@ -50,7 +48,7 @@ public class ResourceExceptionHandler {
 	public ResponseEntity<StandardError> cartEmptyHandler(CartEmptyException e, HttpServletRequest request) {
 		String error = "The shopping cart cannot be empty.";
 		HttpStatus status = HttpStatus.BAD_REQUEST;
-		StandardError err = new StandardError(now, status.value(), error, e.getMessage(), request.getRequestURI());
+		StandardError err = createStandardError(status, error, e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
 
@@ -58,7 +56,7 @@ public class ResourceExceptionHandler {
 	public ResponseEntity<StandardError> invalidCredentialsExceptionHandler(InvalidCredentialsException e, HttpServletRequest request) {
 		String error = "Failure to authentication.";
 		HttpStatus status = HttpStatus.UNAUTHORIZED;
-		StandardError err = new StandardError(now, status.value(), error,e.getMessage(), request.getRequestURI());
+		StandardError err = createStandardError(status, error, e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
 
@@ -69,16 +67,20 @@ public class ResourceExceptionHandler {
 				.stream()
 				.map(fieldError -> new FieldValidationError(fieldError.getField(), fieldError.getDefaultMessage()))
 				.toList();
-
-		var err = new ValidationErrorResponse(now, HttpStatus.BAD_REQUEST.value(), error, request.getRequestURI(), errors);
+		var err = new ValidationErrorResponse(Instant.now(), HttpStatus.BAD_REQUEST.value(), error, request.getRequestURI(), errors);
 		return ResponseEntity.badRequest().body(err);
 	}
 
 	@ExceptionHandler(RuntimeException.class)
 	public ResponseEntity<StandardError> anyExceptionHandler(RuntimeException e, HttpServletRequest request) {
-		String error = "Something went wrong";
+		String error = "Unexpected error";
 		HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-		StandardError err = new StandardError(now, status.value(), error,e.getMessage(), request.getRequestURI());
+		String message = e.getMessage() != null ? e.getMessage() : "An unexpected error occurred";
+		StandardError err = createStandardError(status, error, message, request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
+	}
+
+	private StandardError createStandardError(HttpStatus status, String error, String message, String path) {
+		return new StandardError(Instant.now(), status.value(), error, message, path);
 	}
 }

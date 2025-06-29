@@ -25,4 +25,4 @@ jobs:
           context: ./eshop-backend
           file: ./eshop-backend/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/e-shop-backend:202506120230
+          tags: ${{ secrets.DOCKER_USERNAME }}/e-shop-backend:latest

@@ -27,7 +27,7 @@ public class AuthenticationController {
 
     @Operation(summary = "Authenticate user and set cookies")
     @PostMapping("/authenticate")
-    public ResponseEntity<?> authenticate(@RequestBody AuthRequestDto request, HttpServletResponse response) {
+    public ResponseEntity<?> authenticate(@RequestBody @Valid AuthRequestDto request, HttpServletResponse response) {
         var authResponse = authenticationService.authenticate(request);
 
         ResponseCookie accessTokenCookie = cookieUtils.createCookie("accessToken", authResponse.accessToken(), 3600);

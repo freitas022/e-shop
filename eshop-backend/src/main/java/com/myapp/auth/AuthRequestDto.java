@@ -1,6 +1,14 @@
 package com.myapp.auth;
 
-import lombok.NonNull;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 
-public record AuthRequestDto(@NonNull String email, @NonNull String password) {
-}
+public record AuthRequestDto(
+
+        @NotEmpty(message = "Email is mandatory")
+        @Email(message = "Email should be valid")
+        String email,
+
+        @NotEmpty(message = "Password is mandatory")
+        String password
+) {}
